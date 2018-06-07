@@ -266,6 +266,44 @@ object Words {
             "The Deep"
     )
 
+    val LANGUAGES = arrayOf(
+            "Common",
+            "Dwarvish",
+            "Elvish",
+            "Giant",
+            "Gnomish",
+            "Goblin",
+            "Halfling",
+            "Orc",
+            "Abyssal",
+            "Celestial",
+            "Deep Speech",
+            "Draconic",
+            "Infernal",
+            "Primordial",
+            "Undercommon"
+    )
+
+    val GAMES = arrayOf(
+            "Dice",
+            "Dragonchess",
+            "Playing cards",
+            "Three-Dragon Ante"
+    )
+
+    val INSTRUMENTS = arrayOf(
+            "Bagpipes",
+            "Drum",
+            "Dulcimer",
+            "Flute",
+            "Lute",
+            "Lyre",
+            "Horn",
+            "Pan Flute",
+            "Shawm",
+            "Viol"
+    )
+
     val emotion: String
         get() = EMOTIONS[RNG]
 
@@ -301,4 +339,13 @@ object Words {
 
     val colour: String
         get() = "Blue"
+
+    val instrument: String
+        get() = INSTRUMENTS[RNG]
+
+    val language: String
+        get() = LANGUAGES[RNG]
+
+    val game: String
+        get() = GAMES[RNG]
 }
