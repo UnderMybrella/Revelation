@@ -81,7 +81,7 @@ object VillainTraits {
             4 to "Famine"
     )
 
-    val CAPTIVITY_OR_BRIBERY_METHOD = mapOf(
+    val CAPTIVITY_OR_COERCION_METHOD = mapOf(
             1 to "Bribery",
             2 to "Enticement",
             3 to "Eviction",
@@ -154,6 +154,89 @@ object VillainTraits {
             6 to "Raising taxes"
     )
 
+    val RELIGION_METHODS = mapOf(
+            1 to "Curses",
+            2 to "Desecration",
+            3 to "False gods",
+            4 to "Heresy or cults"
+    )
+
+    val THEFT_OR_PROPERTY_CRIME_METHODS = mapOf(
+            1 to "Arson",
+            2 to "Blackmail or extortion",
+            3 to "Burglary",
+            4 to "Counterfeiting",
+            5 to "Highway robbery",
+            6 to "Looting",
+            7 to "Mugging",
+            8 to "Poaching",
+            9 to "Seizing property",
+            10 to "Smuggling"
+    )
+
+    val TORTURE_METHODS = mapOf(
+            1 to "Acid",
+            2 to "Blinding",
+            3 to "Branding",
+            4 to "Racking",
+            5 to "Thumbscrews",
+            6 to "Whipping"
+    )
+
+    val VICE_METHODS = mapOf(
+            1 to "Adultery",
+            2 to "Drugs or alcohol",
+            3 to "Gambling",
+            4 to "Seduction"
+    )
+
+    val WARFARE_METHODS = mapOf(
+            1 to "Ambush",
+            2 to "Invasion",
+            3 to "Massacre",
+            4 to "Mercenaries",
+            5 to "Rebellion",
+            6 to "Terrorism"
+    )
+
+    val VILLAIN_METHODS = mapOf<Int, () -> String>(
+            1 to { "Agricultural devastation (${AGRICULTURAL_DEVASTATION_METHOD[DiceSet.d4()]})" },
+            2 to { "Assault or beatings" },
+            3 to { "Bounty hunting or assassination" },
+            4 to { "Captivity or coercion (${CAPTIVITY_OR_COERCION_METHOD[DiceSet.d10()]})" },
+            5 to { "Confidence scams (${CONFIDENCE_SCAM_METHODS[DiceSet.d6()]})" },
+            6 to { "Defamation (${DEFAMATION_METHODS[DiceSet.d4()]})" },
+            7 to { "Dueling" },
+            8 to { "Execution (${EXECUTION_METHODS[DiceSet.d8()]}" },
+            9 to { "Impersonation or disguise" },
+            10 to { "Lying or perjury" },
+            11 to { "Magical mayhem (${MAGICAL_MAYHEM_METHODS[DiceSet.d8()]})" },
+            12 to { "Murder (${MURDER_METHODS[DiceSet.d10()]})" },
+            13 to { "Neglect" },
+            14 to { "Politics (${POLITICAL_METHODS[DiceSet.d6()]})" },
+            15 to { "Religion (${RELIGION_METHODS[DiceSet.d4()]})" },
+            16 to { "Stalking" },
+            17 to { "Theft or Property Crime (${THEFT_OR_PROPERTY_CRIME_METHODS[DiceSet.d10()]})" },
+            18 to { "Torture (${TORTURE_METHODS[DiceSet.d6()]})" },
+            19 to { "Vice (${VICE_METHODS[DiceSet.d4()]})" },
+            20 to { "Warfare (${WARFARE_METHODS[DiceSet.d6()]})" }
+    )
+
+    val VILLAIN_WEAKNESS = mapOf(
+            1 to "A hidden object holds the villain's soul",
+            2 to "The villain's power is broken if the death of its true love is avenged",
+            3 to "The villain is weakened in the presence of a particular artifact",
+            4 to "A special weapon deals extra damage when used against the villain",
+            5 to "The villain is destroyed if it speaks its true name",
+            6 to "An ancient prophecy or riddle reveals how the villain can be overthrown",
+            7 to "The villain falls when an ancient enemy forgives its past actions",
+            8 to "The villain loses its power if a mystic bargain it struck long ago is completed"
+    )
+
     val scheme: String
         get() = SCHEMES[DiceSet.d8()]!!.let { (die, scheme) -> scheme[die()]!! }
+    val method: String
+        get() = VILLAIN_METHODS[DiceSet.d20()]!!()
+    val weakness: String
+        get() = VILLAIN_WEAKNESS[DiceSet.d8()]!!
 }

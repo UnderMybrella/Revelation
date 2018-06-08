@@ -10,7 +10,7 @@ object DiceSet {
         abstract operator fun get(num: Int): Int
     }
 
-    open class StandardDie(val sides: Int, val transform: (Int) -> Int = Int::toInt): Die() {
+    open class StandardDie(val sides: Int, val transform: (Int) -> Int = { roll -> roll + 1 }): Die() {
         override operator fun get(num: Int): Int = (0 until num.coerceAtLeast(1)).sumBy { transform(RANDOM.nextInt(sides)) }
     }
 
