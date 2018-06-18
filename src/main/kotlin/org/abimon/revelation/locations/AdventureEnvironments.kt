@@ -110,6 +110,33 @@ object AdventureEnvironments {
             17 .. 20 to { CharacterClass.WIZARD }
     )
 
+    val DUNGEON_PURPOSE = mapRangeOf(
+            1 .. 1 to { DungeonPurpose.DEATH_TRAP },
+            2 .. 5 to { DungeonPurpose.LAIR },
+            6 .. 6 to { DungeonPurpose.MAZE },
+            7 .. 9 to { DungeonPurpose.MINE },
+            10 .. 10 to { DungeonPurpose.PLANAR_GATE },
+            11 .. 14 to { DungeonPurpose.STRONGHOLD },
+            15 .. 17 to { DungeonPurpose.TEMPLE_OR_SHRINE },
+            18 .. 19 to { DungeonPurpose.TOMB },
+            20 .. 20 to { DungeonPurpose.TREASURE_VAULT }
+    )
+
+    val DUNGEON_HISTORY = mapRangeOf(
+            1 .. 3 to { DungeonHistory.ABANDONED_BY_CREATORS },
+            4 .. 4 to { DungeonHistory.ABANDONED_PLAGUE },
+            5 .. 8 to { DungeonHistory.CONQUERED },
+            9 .. 10 to { DungeonHistory.CREATORS_DESTROYED_BY_RAIDERS },
+            11 .. 11 to { DungeonHistory.CREATORS_DESTROYED_BY_DISCOVERY },
+            12 .. 12 to { DungeonHistory.CREATORS_DESTROYED_BY_INTERNAL },
+            13 .. 13 to { DungeonHistory.CREATORS_DESTROYED_BY_MAGICAL },
+            14 .. 15 to { DungeonHistory.CREATORS_DESTROYED_BY_DISASTER },
+            16 .. 16 to  { DungeonHistory.LOCATION_CURSED_BY_GODS },
+            17 .. 18 to { DungeonHistory.ORIGINAL_CREATOR_IN_CONTROL },
+            19 .. 19 to { DungeonHistory.OVERRUN_BY_PLANAR_CREATURES },
+            20 .. 20 to { DungeonHistory.SITE_OF_A_GREAT_MIRACLE }
+    )
+
     val dungeonLocation: DungeonLocation
         get() = DUNGEON_LOCATION[DiceSet.d100()]!!()
 
@@ -118,6 +145,9 @@ object AdventureEnvironments {
 
     val dungeonCreator: DungeonCreator
         get() = DUNGEON_CREATOR[DiceSet.d20()]!!()
+
+    val dungeonHistory: DungeonHistory
+        get() = DUNGEON_HISTORY[DiceSet.d20()]!!()
 
     val cultOrReligiousGroup: DungeonCreator.Cult
         get() = CULTS_AND_RELIGIOUS_GROUPS[DiceSet.d20()]!!()

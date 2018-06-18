@@ -17,6 +17,8 @@ sealed class DungeonCreator(val text: String) {
     class HUMANS: DungeonCreator("Humans") {
         val alignment: EnumAlignment = AdventureEnvironments.npcAlignment
         val npcClass: CharacterClass = AdventureEnvironments.npcClass
+
+        override fun toString(): String = "Humans ($alignment $npcClass)"
     }
     object KUO_TOA: DungeonCreator("Kuo-toa")
     object LICH: DungeonCreator("Lich")
