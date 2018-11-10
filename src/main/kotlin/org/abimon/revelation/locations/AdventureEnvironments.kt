@@ -6,7 +6,7 @@ import org.abimon.revelation.EnumAlignment
 import org.abimon.revelation.mapRangeOf
 
 object AdventureEnvironments {
-    val DUNGEON_LOCATION = mapRangeOf(
+    val DUNGEON_LOCATION = mapRangeOf<() -> DungeonLocation>(
             1 .. 4 to { DungeonLocation.BUILDING_IN_A_CITY },
             5 .. 8 to { DungeonLocation.CATACOMBS_OR_SEWERS_BENEATH_CITY },
             9 .. 12 to { DungeonLocation.BENEATH_FARMHOUSE },

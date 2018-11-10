@@ -1,5 +1,5 @@
 package org.abimon.revelation.magicItems.categories
 
-interface ICategoryItemGen {
-    fun genName(): String
+interface ICategoryItemGen<T> {
+    fun gen(): T
 }

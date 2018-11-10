@@ -27,8 +27,8 @@ sealed class DungeonLocation(val text: String) {
     object ISLAND: DungeonLocation("On an island")
     object UNDERWATER: DungeonLocation("Underwater")
 
-    class EXOTIC: DungeonLocation("Exotic") {
-        val exoticLocation: ExoticLocation = AdventureEnvironments.exoticLocation
+    class EXOTIC (val exoticLocation: ExoticLocation) : DungeonLocation("Exotic") {
+        constructor(): this(AdventureEnvironments.exoticLocation)
 
         override fun toString(): String = "Exotic Location ($exoticLocation)"
     }

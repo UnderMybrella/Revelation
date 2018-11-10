@@ -5,8 +5,8 @@ import org.abimon.revelation.EnumAlignment
 
 sealed class DungeonCreator(val text: String) {
     object BEHOLDER: DungeonCreator("Beholder")
-    class CULT: DungeonCreator("Cult") {
-        val cult: Cult = AdventureEnvironments.cultOrReligiousGroup
+    class CULT(val cult: Cult) : DungeonCreator("Cult") {
+        constructor(): this(AdventureEnvironments.cultOrReligiousGroup)
 
         override fun toString(): String = "Cult or religious group ($cult)"
     }
@@ -14,9 +14,8 @@ sealed class DungeonCreator(val text: String) {
     object ELVES: DungeonCreator("Elves (including drow)")
     object GIANTS: DungeonCreator("Giants")
     object HOBGOBLINGS: DungeonCreator("Hobgoblins")
-    class HUMANS: DungeonCreator("Humans") {
-        val alignment: EnumAlignment = AdventureEnvironments.npcAlignment
-        val npcClass: CharacterClass = AdventureEnvironments.npcClass
+    class HUMANS(val alignment: EnumAlignment = AdventureEnvironments.npcAlignment, val npcClass: CharacterClass = AdventureEnvironments.npcClass) : DungeonCreator("Humans") {
+        constructor(): this(AdventureEnvironments.npcAlignment, AdventureEnvironments.npcClass)
 
         override fun toString(): String = "Humans ($alignment $npcClass)"
     }

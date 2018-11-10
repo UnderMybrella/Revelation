@@ -1,4 +1,4 @@
-package org.abimon.magicItemGen
+package org.abimon.revelation.magicItems
 
 enum class EnumActivation {
     COMMAND_WORD,

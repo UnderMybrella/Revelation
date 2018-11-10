@@ -1,30 +1,29 @@
 package org.abimon.revelation.characters
 
-import org.abimon.revelation.DiceSet
-import org.abimon.revelation.Words
+import org.abimon.revelation.*
 
 object NPCTraits {
-    val APPEARANCE = mapOf<Int, Pair<String, () -> String>>(
-            1 to ("Distinctive jewelry; earrings, necklace, circlet, bracelets" to this::none),
-            2 to ("Piercings" to this::none),
-            3 to ("Flamboyant or outlandish clothes" to this::none),
-            4 to ("Formal, clean clothes" to this::none),
-            5 to ("Ragged, dirty clothes" to this::none),
-            6 to ("Pronounced scar" to this::none),
-            7 to ("Missing teeth" to this::none),
-            8 to ("Missing fingers" to this ::none),
-            9 to ("Unusual eye colour (or two different colours)" to this::eyeColour),
-            10 to ("Tattoos" to this::none),
-            11 to ("Birthmark" to this::none),
-            12 to ("Unusual skin colour" to Words::colour),
-            13 to ("Bald" to this::none),
-            14 to ("Braided beard or hair" to this::none),
-            15 to ("Unusual hair colour" to Words::colour),
-            16 to ("Nervous eye twitch" to this::none),
-            17 to ("Distinctive nose" to this::none),
-            18 to ("Distinctive posture (crooked or rigid)" to this::none),
-            19 to ("Exceptionally beautiful" to this::none),
-            20 to ("Exceptionally ugly" to this::none)
+    val APPEARANCE = mapOf(
+            1 to { NPCAppearanceTrait.DISTINCTIVE_JEWELRY },
+            2 to { NPCAppearanceTrait.PIERCINGS },
+            3 to { NPCAppearanceTrait.FLAMBOYANT_CLOTHES },
+            4 to { NPCAppearanceTrait.FORMAL_CLOTHES },
+            5 to { NPCAppearanceTrait.RAGGED_CLOTHES },
+            6 to { NPCAppearanceTrait.PRONOUNCED_SCAR },
+            7 to { NPCAppearanceTrait.MISSING_TEETH },
+            8 to { NPCAppearanceTrait.MISSING_FINGERS },
+            9 to NPCAppearanceTrait::UNUSUAL_EYE_COLOURS,
+            10 to { NPCAppearanceTrait.TATTOOS },
+            11 to { NPCAppearanceTrait.BIRTHMARK },
+            12 to NPCAppearanceTrait::UNUSUAL_SKIN_COLOR,
+            13 to { NPCAppearanceTrait.BALD },
+            14 to { NPCAppearanceTrait.BRAIDED_BEARD },
+            15 to NPCAppearanceTrait::UNUSUAL_HAIR_COLOR,
+            16 to { NPCAppearanceTrait.NERVOUS_EYE },
+            17 to { NPCAppearanceTrait.DISTINCTIVE_NOSE },
+            18 to { NPCAppearanceTrait.DISTINCTIVE_POSTURE },
+            19 to { NPCAppearanceTrait.EXCEPTIONALLY_BEAUTIFUL },
+            20 to { NPCAppearanceTrait.EXCEPTIONALLY_UGLY }
     )
 
     val HIGH_ABILITY = mapOf<Int, String>(
@@ -46,26 +45,26 @@ object NPCTraits {
     )
 
     val TALENTS = mapOf<Int, Pair<String, () -> String>>(
-            1 to ("Plays a musical instrument" to Words::instrument),
-            2 to ("Speaks several languages fluently" to this::languages),
-            3 to ("Unbelievably lucky" to this::none),
-            4 to ("Perfect memory" to this::none),
-            5 to ("Great with animals" to this::none),
-            6 to ("Great with children" to this::none),
-            7 to ("Great at solving puzzles" to this::none),
-            8 to ("Great at one game" to Words::game),
-            9 to ("Great at impersonations" to this::none),
-            10 to ("Draws beautifully" to this::none),
-            11 to ("Paints beautifully" to this::none),
-            12 to ("Sings beautifully" to this::none),
-            13 to ("Drinks everyone under the table" to this::none),
-            14 to ("Expert carmpenter" to this::none),
-            15 to ("Expert cook" to this::none),
-            16 to ("Expert dart thrower and rock skipper" to this::none),
-            17 to ("Expert juggler" to this::none),
-            18 to ("Skilled actor and master of disguise" to this::none),
-            19 to ("Skilled dancer" to this::none),
-            20 to ("Knows thieves' cant" to this::none)
+            1 to ("Plays a musical instrument" to ::noExtra),
+            2 to ("Speaks several languages fluently" to ::languages),
+            3 to ("Unbelievably lucky" to ::noExtra),
+            4 to ("Perfect memory" to ::noExtra),
+            5 to ("Great with animals" to ::noExtra),
+            6 to ("Great with children" to ::noExtra),
+            7 to ("Great at solving puzzles" to ::noExtra),
+            8 to ("Great at one game" to ::noExtra),
+            9 to ("Great at impersonations" to ::noExtra),
+            10 to ("Draws beautifully" to ::noExtra),
+            11 to ("Paints beautifully" to ::noExtra),
+            12 to ("Sings beautifully" to ::noExtra),
+            13 to ("Drinks everyone under the table" to ::noExtra),
+            14 to ("Expert carmpenter" to ::noExtra),
+            15 to ("Expert cook" to ::noExtra),
+            16 to ("Expert dart thrower and rock skipper" to ::noExtra),
+            17 to ("Expert juggler" to ::noExtra),
+            18 to ("Skilled actor and master of disguise" to ::noExtra),
+            19 to ("Skilled dancer" to ::noExtra),
+            20 to ("Knows thieves' cant" to ::noExtra)
     )
     
     val MANNERISMS = mapOf<Int, String>(
@@ -188,8 +187,14 @@ object NPCTraits {
             12 to "Foolhardy bravery"
     )
 
-    val apperance: String
-        get() = APPEARANCE[DiceSet.d20()]!!.let { (feature, option) -> "$feature (${option()})" }
+    val GENDER = mapRangeOf(
+            1 .. 3 to "Male",
+            4 .. 6 to "Female",
+            7 .. 7 to "Other"
+    )
+
+    val appearance: NPCAppearanceTrait
+        get() = APPEARANCE[DiceSet.d20()]!!()
 
     val highAbility: String
         get() = HIGH_ABILITY[DiceSet.d6()]!!.let { score -> "$score (+${DiceSet.d4() + 1})"}
@@ -197,10 +202,39 @@ object NPCTraits {
     val lowAbility: String
         get() = LOW_ABILITY[DiceSet.d6()]!!.let { score -> "$score (-${DiceSet.d4() + 1})"}
 
+    val npcTalent: String
+        get() = TALENTS[DiceSet.d20()]!!.format()
+
+    val npcMannerism: String
+        get() = MANNERISMS[DiceSet.d20()]!!
+
+    val npcInteractionTrait: String
+        get() = INTERACTION_TRAITS[DiceSet.d12()]!!
+
+    val npcFlaws: String
+        get() = NPC_FLAWS[DiceSet.d12()]!!
+
     val npcBond: String
         get() = NPC_BONDS[DiceSet.d10()]!!()
 
-    fun none(): String = "N/a"
-    fun eyeColour(): String = if (DiceSet.d4() < 3) Words.colour else "${Words.colour} and ${Words.colour}"
-    fun languages(): String = (0 until DiceSet.d4() + 3).map { Words.language }.distinct().joinToString()
+    val npcGoodIdeal: String
+        get() = GOOD_IDEALS[DiceSet.d6()]!!
+
+    val npcEvilIdeal: String
+        get() = EVIL_IDEALS[DiceSet.d6()]!!
+
+    val npcLawfulIdeal: String
+        get() = LAWFUL_IDEALS[DiceSet.d6()]!!
+
+    val npcChaoticIdeal: String
+        get() = LAWFUL_IDEALS[DiceSet.d6()]!!
+
+    val npcNeutralIdeal: String
+        get() = NEUTRAL_IDEALS[DiceSet.d6()]!!
+
+    val npcOtherIdeal: String
+        get() = OTHER_IDEALS[DiceSet.d6()]!!
+
+    val gender: String
+        get() = GENDER[DiceSet.d4[2] - 1]!!
 }

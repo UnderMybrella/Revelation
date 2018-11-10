@@ -1,7 +1,7 @@
 package org.abimon.revelation.characters
 
 class NPC(
-        val appearance: MutableList<String> = arrayListOf(NPCTraits.apperance),
+        val appearanceTraits: MutableList<NPCAppearanceTrait> = arrayListOf(NPCTraits.appearance),
         val highAbilities: MutableList<String> = arrayListOf(NPCTraits.highAbility),
         val lowAbilities: MutableList<String> = arrayListOf(NPCTraits.lowAbility)
 ) {

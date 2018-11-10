@@ -1,9 +1,10 @@
-package org.abimon.magicItemGen
+package org.abimon.revelation.magicItems
 
-import org.abimon.revelation.magicItems.categories.EnumMagicItemCategory
+import org.abimon.revelation.magicItems.categories.MagicItemCategory
 
-data class MagicItem(
-        val category: EnumMagicItemCategory,
+
+data class MagicItem<T>(
+        val category: MagicItemCategory<T>,
         val name: String,
         val requiresAttunement: Boolean,
         val activation: EnumActivation
