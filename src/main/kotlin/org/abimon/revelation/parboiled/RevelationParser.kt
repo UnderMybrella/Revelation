@@ -67,8 +67,7 @@ open class RevelationParser(parboiledCreated: Boolean) : BaseParser<Any>() {
                                                     "gen appearance, stats, talent, mannerism, interaction trait, flaw, " +
                                                             "bond, gender, parent, birthplace, family, family lifestyle, " +
                                                             "number of siblings, " +
-                                                            "birth order, alignment, status, occupation, race, " +
-                                                            "status, married"
+                                                            "birth order, alignment, status, occupation, race, married"
                                             )
                                             appendln("gen childhood home, childhood memories")
                                         })
