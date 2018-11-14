@@ -233,6 +233,9 @@ object VillainTraits {
             8 to "The villain loses its power if a mystic bargain it struck long ago is completed"
     )
 
+    val immortalityScheme: String
+        get() = IMMORTALITY_SCHEME[DiceSet.d4()]!!
+
     val scheme: String
         get() = SCHEMES[DiceSet.d8()]!!.let { (die, scheme) -> scheme[die()]!! }
     val method: String

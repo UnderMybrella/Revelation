@@ -2,6 +2,7 @@ package org.abimon.revelation.parboiled
 
 import org.abimon.revelation.DiceSet
 import org.abimon.revelation.characters.NPCTraits
+import org.abimon.revelation.characters.VillainTraits
 import org.abimon.revelation.characters.XGtECharacterBuilding
 import org.abimon.revelation.innerPlane
 import org.abimon.revelation.outerPlane
@@ -117,7 +118,10 @@ open class RevelationParser(parboiledCreated: Boolean) : BaseParser<Any>() {
                 "married" to { if (DiceSet.d3() == 3) "Married" else "Single" },
 
                 "inner_plane" to ::innerPlane,
-                "outer_plane" to ::outerPlane
+                "outer_plane" to ::outerPlane,
+
+                /** Villain Traits */
+                "immortality_scheme" to VillainTraits::immortalityScheme
         )
 
         val generation = Sequence(
