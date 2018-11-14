@@ -7,6 +7,8 @@ import org.abimon.revelation.characters.genetics.HeightGene
 import org.abimon.revelation.characters.genetics.RacialGene
 import org.abimon.revelation.characters.races.DwarfRace
 import org.abimon.revelation.magicItems.categories.MagicItemCategory
+import org.abimon.revelation.parboiled.RevelationFunc
+import org.abimon.revelation.parboiled.RevelationOutput
 import org.abimon.revelation.parboiled.RevelationParser
 import org.parboiled.parserunners.BasicParseRunner
 import java.util.concurrent.ThreadLocalRandom
@@ -20,18 +22,25 @@ object Revelation {
             print("> ")
             val line = readLine() ?: break
 
-            val runner = BasicParseRunner<Any>(parser.CommandLine())
-            val result = runner.run(line)
+            val header = BasicParseRunner<Any>(parser.Macros())
+            val headerResult = header.run(line)
 
-            if (result.matched) {
-                result.valueStack.toList().reversed().forEach { value ->
-                    when (value) {
-                        is Runnable -> {
-                            value.run()
+            if (headerResult.matched) {
+                val runner = BasicParseRunner<Any>(parser.CommandLine())
+                val result = runner.run(headerResult.valueStack.reversed().joinToString("\n"))
+
+                if (result.matched) {
+                    val data = RevelationOutput()
+                    result.valueStack.toList().reversed().forEach { value ->
+                        when (value) {
+                            is RevelationFunc -> value(data)
+                            is Pair<*, *> -> data.add(value.first.toString() to value.second)
                         }
-                        is Pair<*, *> -> println("${value.first.toString().capitalize()}: ${value.second.toString().capitalize()}")
                     }
-                    println()
+
+                    println(data.format())
+                } else {
+                    println("Unknown command: $line")
                 }
             } else {
                 println("Unknown command: $line")

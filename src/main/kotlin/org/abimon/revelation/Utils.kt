@@ -1,9 +1,11 @@
 package org.abimon.revelation
 
+import org.abimon.revelation.parboiled.RevelationOutput
 import java.util.*
 
 typealias DetailPair<T> = Pair<T, () -> T>
 typealias RevelationAction = () -> Unit
+typealias RevelationOutputTemplate = (RevelationOutput) -> String
 
 public infix fun <T, R> Array<out T>.zipAll(other: Array<out R>): List<Pair<T, R>> {
     return flatMap { t -> other.map { r -> t to r } }

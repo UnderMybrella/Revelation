@@ -11,6 +11,7 @@ import org.parboiled.BaseParser
 import org.parboiled.Parboiled
 import org.parboiled.Rule
 import org.parboiled.annotations.BuildParseTree
+import org.parboiled.support.StringVar
 import org.parboiled.support.Var
 
 @BuildParseTree
@@ -50,14 +51,47 @@ open class RevelationParser(parboiledCreated: Boolean) : BaseParser<Any>() {
     open fun Digit(): Rule = Digit(10)
     open fun Digit(base: Int): Rule = FirstOf(AnyOf(digitsLower.sliceArray(0 until base)), AnyOf(digitsUpper.sliceArray(0 until base)))
 
-    open fun CommandLine(): Rule {
-        val command = FirstOf(
-                Hello(),
-                Gen()
-        )
+    open fun Macros(): Rule =
+            Sequence(MacroLine(), ZeroOrMore(OptionalInlineWhitespace(), AnyOf(charArrayOf(';', '|', '\n')), OptionalInlineWhitespace(), MacroLine()))
 
-        return Sequence(command, ZeroOrMore(OptionalInlineWhitespace(), AnyOf(charArrayOf(';', '|', '\n')), OptionalInlineWhitespace(), command))
-    }
+    open fun MacroLine(): Rule = FirstOf(
+            Sequence(
+                    IgnoreCase("macro:"),
+                    FirstOf(
+                            Sequence(
+                                    "npc",
+                                    Action<Any> {
+                                        push(buildString {
+                                            appendln("change_format npc")
+                                            appendln(
+                                                    "gen appearance, stats, talent, mannerism, interaction trait, flaw, " +
+                                                            "bond, gender, parent, birthplace, family, family lifestyle, " +
+                                                            "number of siblings, " +
+                                                            "birth order, alignment, status, occupation, race, " +
+                                                            "status, married"
+                                            )
+                                            appendln("gen childhood home, childhood memories")
+                                        })
+                                    }
+                            ),
+                            "filler"
+                    )
+            ),
+            Sequence(
+                    OneOrMore(AllButMatcher(charArrayOf(';', '|', '\n'))),
+                    Action<Any> { push(match()) }
+            )
+    )
+
+    open fun Command(): Rule = FirstOf(
+            Hello(),
+            Gen(),
+            Format(),
+            Add()
+    )
+
+    open fun CommandLine(): Rule =
+            Sequence(Command(), ZeroOrMore(OptionalInlineWhitespace(), AnyOf(charArrayOf(';', '|', '\n')), OptionalInlineWhitespace(), Command()))
 
     open fun Hello(): Rule = Sequence(
             IgnoreCase("Hello"),
@@ -67,7 +101,7 @@ open class RevelationParser(parboiledCreated: Boolean) : BaseParser<Any>() {
     open fun Gen(): Rule {
         val timesVar = Var<Int>(0)
         val actionVar = Var<Pair<String, () -> Any>>()
-        val baseStrings = mapOf<String, () -> Any>(
+        val baseStrings = mapOf(
                 "appearance" to NPCTraits::appearance,
                 "high stat" to NPCTraits::highAbility,
                 "low stat" to NPCTraits::lowAbility,
@@ -248,7 +282,55 @@ open class RevelationParser(parboiledCreated: Boolean) : BaseParser<Any>() {
         )
     }
 
+    open fun Add(): Rule {
+        val valueVar = StringVar()
+
+        return Sequence(
+                IgnoreCase("Add"),
+                " ",
+                Parameter(),
+                Action<Any> { valueVar.set(pop() as String) },
+                " ",
+                IgnoreCase("to"),
+                " ",
+                Parameter(),
+                Action<Any> {
+                    val pair = (pop() as String) to valueVar.get()
+                    pushFunc { data -> data.add(pair) }
+                }
+        )
+    }
+
+    open fun Parameter(): Rule = FirstOf(
+            Sequence(
+                    '"',
+                    OneOrMore(ParamMatcher),
+                    Action<Any> { push(match()) },
+                    '"'
+            ),
+            Sequence(
+                    OneOrMore(AllButMatcher(whitespace)),
+                    Action<Any> { push(match()) }
+            )
+    )
+
+    open fun Format(): Rule = Sequence(
+            IgnoreCase("change_format"),
+            " ",
+            FirstOf(
+                    Sequence(
+                            "raw",
+                            Action<Any> { pushFunc { data -> data.format = RevelationOutput.RAW } }
+                    ),
+                    Sequence(
+                            "npc",
+                            Action<Any> { pushFunc { data -> data.format = RevelationOutput.NPC } }
+                    )
+            )
+    )
+
     fun pushRunnable(block: () -> Unit): Boolean = push(Runnable(block))
+    fun pushFunc(block: (RevelationOutput) -> Unit): Boolean = push(RevelationFunc(block))
     fun Var<Runnable>.set(block: () -> Unit): Boolean = set(Runnable(block))
 
     open fun DieRoll(): Rule {
