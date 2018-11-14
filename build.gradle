@@ -12,13 +12,12 @@ buildscript {
 plugins {
     id 'java'
     id 'application'
-    id 'com.github.johnrengelman.shadow' version '2.0.1'
 }
-
-group 'org.abimon'
 
 apply plugin: 'kotlin'
 apply plugin: 'maven'
+
+group 'org.abimon'
 
 sourceCompatibility = 1.8
 mainClassName = "org.abimon.revelation.Revelation"
@@ -56,6 +55,11 @@ task sourcesJar(type: Jar, dependsOn: classes) {
 task javadocJar(type: Jar, dependsOn: javadoc) {
     classifier = 'javadoc'
     from javadoc.destinationDir
+}
+
+artifacts {
+    archives sourcesJar
+    archives javadocJar
 }
 
 compileKotlin {
