@@ -4,7 +4,7 @@ import org.abimon.revelation.*
 import java.util.concurrent.ThreadLocalRandom
 
 object NPCTraits {
-    @RevelationTable("appearance", "appearances")
+    @RevelationTable("appearance", "appearances", recommendedRoll = "1d20", category = "Detailed NPCs")
     val APPEARANCE = mapOf(
             1 to { NPCAppearanceTrait.DISTINCTIVE_JEWELRY },
             2 to { NPCAppearanceTrait.PIERCINGS },
@@ -28,7 +28,7 @@ object NPCTraits {
             20 to { NPCAppearanceTrait.EXCEPTIONALLY_UGLY }
     )
 
-    @RevelationTable("high ability", "high abilities")
+    @RevelationTable("high ability", "high abilities", recommendedRoll = "1d6", category = "Detailed NPCs")
     val HIGH_ABILITY = mapOf<Int, String>(
             1 to "Strength - powerful, brawny, strong as an ox",
             2 to "Dexterity - lithe, agile, graceful",
@@ -38,7 +38,7 @@ object NPCTraits {
             6 to "Charisma - persuasive, forceful, born leader"
     )
 
-    @RevelationTable("low ability", "low abilities")
+    @RevelationTable("low ability", "low abilities", recommendedRoll = "1d6", category = "Detailed NPCs")
     val LOW_ABILITY = mapOf(
             1 to "Strength - feeble, scrawny",
             2 to "Dexterity - clumsy, fumbling",
@@ -48,7 +48,7 @@ object NPCTraits {
             6 to "Charisma - dull, boring"
     )
 
-    @RevelationTable("talent", "talents")
+    @RevelationTable("talent", "talents", recommendedRoll = "1d20", category = "Detailed NPCs")
     val TALENTS = mapOf<Int, Pair<String, () -> String>>(
             1 to ("Plays a musical instrument" to ::noExtra),
             2 to ("Speaks several languages fluently" to ::languages),
@@ -72,7 +72,7 @@ object NPCTraits {
             20 to ("Knows thieves' cant" to ::noExtra)
     )
 
-    @RevelationTable("mannerism", "mannerisms")
+    @RevelationTable("mannerism", "mannerisms", recommendedRoll = "1d20", category = "Detailed NPCs")
     val MANNERISMS = mapOf<Int, String>(
             1 to "Prone to singing, whistling, or humming quietly",
             2 to "Speaks in rhyme or some other peculiar way",
@@ -96,7 +96,7 @@ object NPCTraits {
             20 to "Twirls hair or tugs beard"
     )
 
-    @RevelationTable("interaction trait", "interaction traits")
+    @RevelationTable("interaction trait", "interaction traits", recommendedRoll = "1d12", category = "Detailed NPCs")
     val INTERACTION_TRAITS = mapOf(
             1 to "Argumentative",
             2 to "Arrogant",
@@ -112,7 +112,7 @@ object NPCTraits {
             12 to "Suspicious"
     )
 
-    @RevelationTable("good ideal", "good ideals")
+    @RevelationTable("good ideal", "good ideals", recommendedRoll = "1d6", category = "Detailed NPCs")
     val GOOD_IDEALS = mapOf(
             1 to "Beauty",
             2 to "Charity",
@@ -122,7 +122,7 @@ object NPCTraits {
             6 to "Self-sacrifice"
     )
 
-    @RevelationTable("evil ideal", "evil ideals")
+    @RevelationTable("evil ideal", "evil ideals", recommendedRoll = "1d6", category = "Detailed NPCs")
     val EVIL_IDEALS = mapOf(
             1 to "Domination",
             2 to "Greed",
@@ -132,7 +132,7 @@ object NPCTraits {
             6 to "Slaughter"
     )
 
-    @RevelationTable("lawful ideal", "lawful ideals")
+    @RevelationTable("lawful ideal", "lawful ideals", recommendedRoll = "1d6", category = "Detailed NPCs")
     val LAWFUL_IDEALS = mapOf(
             1 to "Community",
             2 to "Fairness",
@@ -142,7 +142,7 @@ object NPCTraits {
             6 to "Tradition"
     )
 
-    @RevelationTable("chaotic ideal", "chaotic ideals")
+    @RevelationTable("chaotic ideal", "chaotic ideals", recommendedRoll = "1d6", category = "Detailed NPCs")
     val CHAOTIC_IDEALS = mapOf(
             1 to "Change",
             2 to "Creativity",
@@ -152,7 +152,7 @@ object NPCTraits {
             6 to "Whimsy"
     )
 
-    @RevelationTable("neutral ideal", "neutral ideals")
+    @RevelationTable("neutral ideal", "neutral ideals", recommendedRoll = "1d6", category = "Detailed NPCs")
     val NEUTRAL_IDEALS = mapOf(
             1 to "Balance",
             2 to "Knowledge",
@@ -162,7 +162,7 @@ object NPCTraits {
             6 to "People"
     )
 
-    @RevelationTable("other ideal", "other ideals")
+    @RevelationTable("other ideal", "other ideals", recommendedRoll = "1d6", category = "Detailed NPCs")
     val OTHER_IDEALS = mapOf(
             1 to "Aspiration",
             2 to "Discovery",
@@ -172,7 +172,7 @@ object NPCTraits {
             6 to "Self-knowledge"
     )
 
-    @RevelationTable("bond", "bonds")
+    @RevelationTable("bond", "bonds", recommendedRoll = "1d10", category = "Detailed NPCs")
     val NPC_BONDS = mapOf(
             1 to { "Dedicated to fulfilling a personal life goal" },
             2 to { "Protective of close family members" },
@@ -186,7 +186,7 @@ object NPCTraits {
             10 to { "$npcBond & $npcBond"}
     )
 
-    @RevelationTable("flaw", "flaws")
+    @RevelationTable("flaw", "flaws", recommendedRoll = "1d12", category = "Detailed NPCs")
     val NPC_FLAWS = mapOf(
             1 to "Forbidden love or susceptability to romance",
             2 to "Enjoys decadent pleasures",
@@ -202,7 +202,7 @@ object NPCTraits {
             12 to "Foolhardy bravery"
     )
 
-    @RevelationTable("gender")
+    @RevelationTable("gender", recommendedRoll = "2d4-1", category = "- Misc -")
     val GENDER = mapRangeOf(
             1 .. 3 to "Male",
             4 .. 6 to "Female",

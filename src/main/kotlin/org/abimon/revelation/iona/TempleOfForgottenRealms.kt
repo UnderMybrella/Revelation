@@ -5,11 +5,11 @@ import org.abimon.revelation.DiceSet
 import org.abimon.revelation.RevelationTable
 
 object TempleOfForgottenRealms: DataMapObject("temple_of_forgotten_realms") {
-    @RevelationTable("buff", "buffs", recommendedRoll = "1d10")
+    @RevelationTable("buff", "buffs", recommendedRoll = "1d10", category = "Temple of Forgotten Realms")
     val BUFFS = dataMap fromKey "buffs"
-    @RevelationTable("buff", "buffs", recommendedRoll = "1d10")
+    @RevelationTable("buff", "buffs", recommendedRoll = "1d10", category = "Temple of Forgotten Realms")
     val DEBUFFS = dataMap fromKey "debuffs"
-    @RevelationTable("buff", "buffs", recommendedRoll = "1d20")
+    @RevelationTable("buff", "buffs", recommendedRoll = "1d20", category = "Temple of Forgotten Realms")
     val ENVIRONMENTAL = dataMap fromKey "environmental"
 
     val buff: String

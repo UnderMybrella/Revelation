@@ -13,7 +13,7 @@ fun Any?.findTables(): List<Pair<String, Map<Int, Any?>>> {
     val instance = (this?.instance() ?: return emptyList())
 
     return instance::class.java.declaredFields.mapNotNull { field ->
-        val tags = field.annotations.mapNotNull { annotation -> if(annotation is RevelationTable) annotation.tags else null }.toTypedArray().flatten()
+        val tags = field.annotations.mapNotNull { annotation -> if (annotation is RevelationTable) annotation.tags else null }.toTypedArray().flatten()
 
         if (tags.isNotEmpty())
             return@mapNotNull field.getMapFrom(instance).let { map -> tags.map { tag -> tag to map } }
@@ -21,16 +21,25 @@ fun Any?.findTables(): List<Pair<String, Map<Int, Any?>>> {
     }.flatten()
 }
 
-fun Any?.findTableNames(): List<Pair<String, String>> {
+fun Any?.findTableNames(): List<Triple<String, String, String>> {
     val instance = (this?.instance() ?: return emptyList())
 
-    return instance::class.java.declaredFields.mapNotNull { field ->
-        val tags = field.annotations.mapNotNull { annotation -> if(annotation is RevelationTable) annotation.tags.map { tag -> tag to annotation.recommendedRoll } else null }.flatten()
+    val tables: List<RevelationTable> = instance::class.java.declaredFields.mapNotNull { field ->
+        val tags = field.annotations.mapNotNull { annotation -> if (annotation is RevelationTable) annotation else null }
 
         if (tags.isNotEmpty())
             return@mapNotNull tags
         return@mapNotNull null
     }.flatten()
+
+    return tables.flatMap { table ->
+        table.tags.flatMap { tag ->
+            listOf(
+                    Triple("table_category", tag, if (table.category.isBlank()) instance::class.java.simpleName else table.category),
+                    Triple("table_roll", tag, table.recommendedRoll)
+            )
+        }
+    }
 }
 
 fun Field.getMapFrom(instance: Any): Map<Int, Any?> {
@@ -49,10 +58,10 @@ fun <T> mapRangeOf(vararg params: Pair<IntRange, T>): Map<Int, T> = params.flatM
 
 fun <T> mapOfNames(vararg names: T): Map<Int, T> = names.flatMap { str -> listOf(str, str) }.mapIndexed { index, s -> index + 1 to s }.toMap()
 
-fun <T: Any> T.instance(): T = this
+fun <T : Any> T.instance(): T = this
 
-inline fun <reified T: Any> bruteForce(length: Int, charPool: Array<T>): List<Array<T>> = bruteForce(length, (0 until length).map { charPool }.toTypedArray())
-inline fun <reified T: Any> bruteForce(length: Int, charPool: Array<Array<T>>): List<Array<T>> {
+inline fun <reified T : Any> bruteForce(length: Int, charPool: Array<T>): List<Array<T>> = bruteForce(length, (0 until length).map { charPool }.toTypedArray())
+inline fun <reified T : Any> bruteForce(length: Int, charPool: Array<Array<T>>): List<Array<T>> {
     val strs = ArrayList<Array<T>>()
 
     bruteForceRaw(length, charPool) { word -> if (word !in strs) strs.add(word) }
@@ -60,8 +69,8 @@ inline fun <reified T: Any> bruteForce(length: Int, charPool: Array<Array<T>>): 
     return strs
 }
 
-inline fun <reified T: Any> bruteForce(length: Int, charPool: Array<T>, crossinline operate: (Array<T>) -> Unit) = bruteForceRaw(length, (0 until length).map { charPool }.toTypedArray(), operate)
-inline fun <reified T: Any> bruteForceRaw(length: Int, charPool: Array<Array<T>>, crossinline operate: (Array<T>) -> Unit) = bruteForceRaw(length, charPool.map { it.size }.toIntArray()) { word -> operate(word.mapIndexed { index, i -> charPool[index][i] }.toTypedArray()) }
+inline fun <reified T : Any> bruteForce(length: Int, charPool: Array<T>, crossinline operate: (Array<T>) -> Unit) = bruteForceRaw(length, (0 until length).map { charPool }.toTypedArray(), operate)
+inline fun <reified T : Any> bruteForceRaw(length: Int, charPool: Array<Array<T>>, crossinline operate: (Array<T>) -> Unit) = bruteForceRaw(length, charPool.map { it.size }.toIntArray()) { word -> operate(word.mapIndexed { index, i -> charPool[index][i] }.toTypedArray()) }
 fun bruteForceRaw(length: Int, charPool: IntArray, operate: (IntArray) -> Unit) {
     val word = IntArray(length)
     val lastIndex = length - 1

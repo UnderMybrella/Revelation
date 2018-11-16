@@ -6,13 +6,13 @@ import kotlin.math.roundToInt
 
 object XGtECharacterBuilding: DataMapObject("xgte") {
 
-    @RevelationTable("parent", "parents")
+    @RevelationTable("parent", "parents", recommendedRoll = "1d100", category = "Origins")
     val PARENTS = mapRangeOf(
             1 .. 95 to "You know who your prents are or were.",
             96 .. 100 to "You do not know who your parents were"
     )
 
-    @RevelationTable("half-elf parent", "half-elf parents")
+    @RevelationTable("half-elf parent", "half-elf parents", recommendedRoll = "1d8", category = "Origins")
     val HALF_ELF_PARENTS = mapRangeOf(
             1 .. 5 to "One parent was an elf and the other was a human.",
             6 .. 6 to "One parent was an elf and the other was a half-elf",
@@ -20,7 +20,7 @@ object XGtECharacterBuilding: DataMapObject("xgte") {
             8 .. 8 to "Both parents were half-elves"
     )
 
-    @RevelationTable("half-orc parent", "half-orc parents")
+    @RevelationTable("half-orc parent", "half-orc parents", recommendedRoll = "1d8", category = "Origins")
     val HALF_ORC_PARENTS = mapRangeOf(
             1 .. 3 to "One parent was an orc and the other was a human.",
             4 .. 5 to "One parent was an orc and the other was a half-orc.",
@@ -28,7 +28,7 @@ object XGtECharacterBuilding: DataMapObject("xgte") {
             8 .. 8 to "Both parents were half-orcs."
     )
 
-    @RevelationTable("tiefling parent", "tiefling parents")
+    @RevelationTable("tiefling parent", "tiefling parents", recommendedRoll = "1d8", category = "Origins")
     val TIEFLING_PARENTS = mapRangeOf(
             1 .. 4 to "Both parents were humans, their infernal heritage dormant until you came along.",
             5 .. 6 to "One parent was a tiefling and the other was a human.",
@@ -36,7 +36,7 @@ object XGtECharacterBuilding: DataMapObject("xgte") {
             8 .. 8 to "One parent was a human and the other was a devil."
     )
 
-    @RevelationTable("birthplace")
+    @RevelationTable("birthplace", recommendedRoll = "1d100", category = "Origins")
     val BIRTHPLACE = mapRangeOf(
             1 .. 50 to ("Home" to ::noExtra),
             51 .. 55 to ("Home of a family friend" to ::noExtra),
@@ -63,7 +63,7 @@ object XGtECharacterBuilding: DataMapObject("xgte") {
             100 .. 100 to ("On an Outer Plane of your choice" to ::outerPlane)
     )
 
-    @RevelationTable("number of siblings")
+    @RevelationTable("number of siblings", recommendedRoll = "1d10", category = "Origins")
     val NUMBER_OF_SIBLINGS = mapRangeOf(
             -2 .. 2 to { 0 },
             3 .. 4 to { ceil(DiceSet.d6().toFloat() / 2f).roundToInt() },
@@ -72,14 +72,14 @@ object XGtECharacterBuilding: DataMapObject("xgte") {
             9 .. 10 to { DiceSet.d8() + 3 }
     )
 
-    @RevelationTable("birth order")
+    @RevelationTable("birth order", recommendedRoll = "2d6", category = "Origins")
     val BIRTH_ORDER = mapRangeOf(
             2 .. 2 to "Twin, triplet, or quadruplet",
             3 .. 7 to "Older",
             8 .. 12 to "Younger"
     )
 
-    @RevelationTable("absent parent", "absent parents")
+    @RevelationTable("absent parent", "absent parents", recommendedRoll = "1d4", category = "Origins")
     val ABSENT_PARENT = mapOf<Int, DetailPair<String>>(
             1 to ("Your parent died" to this::causeOfDeath),
             2 to ("Your parent was imprisoned, enslaved, or otherwise taken away" to ::noExtra),
@@ -87,7 +87,7 @@ object XGtECharacterBuilding: DataMapObject("xgte") {
             4 to ("Your parent disappeared to an unknown fate" to ::noExtra)
     )
 
-    @RevelationTable("family")
+    @RevelationTable("family", recommendedRoll = "1d100", category = "Origins")
     val FAMILY = mapRangeOf<DetailPair<String>>(
             1 .. 1 to ("None" to this::absentParents),
             2 .. 2 to ("Institution, such as an asylum" to this::absentParents),
@@ -102,7 +102,7 @@ object XGtECharacterBuilding: DataMapObject("xgte") {
             76 .. 100 to ("Mother and father" to ::noExtra)
     )
 
-    @RevelationTable("family lifestyle")
+    @RevelationTable("family lifestyle", recommendedRoll = "3d6", category = "Origins")
     val FAMILY_LIFESTYLE = mapRangeOf(
             3 .. 3 to "Wretched (-40)", //-40
             4 .. 5 to "Squalid (-20)", //-20
@@ -113,7 +113,7 @@ object XGtECharacterBuilding: DataMapObject("xgte") {
             18 .. 18 to "Aristocratic (+40)" //+40
     )
 
-    @RevelationTable("childhood home")
+    @RevelationTable("childhood home", recommendedRoll = "1d100", category = "Origins")
     val CHILDHOOD_HOME = mapRangeOf(
             -40 .. 0 to "On the streets",
             1 .. 20 to "Rundown shack",
@@ -126,7 +126,7 @@ object XGtECharacterBuilding: DataMapObject("xgte") {
             111 .. 140 to "Palace or castle"
     )
 
-    @RevelationTable("childhood memories")
+    @RevelationTable("childhood memories", recommendedRoll = "1d6", category = "Origins")
     val CHILDHOOD_MEMORIES = mapRangeOf(
             -5 .. 3 to "I am still haunted by my childhood, when I was treated badly by my peers",
             4 .. 5 to "I spent most of my childhood alone, with no close friends",
@@ -143,13 +143,26 @@ object XGtECharacterBuilding: DataMapObject("xgte") {
      * - Xanathar's Guide to Everything, page 70
      */
 
-    @RevelationTable("adventures")
+    @RevelationTable("adventures", recommendedRoll = "1d100", category = "Life Events")
     val ADVENTURES = (dataMap["adventures"] as? BlankMap).toDataMap()
+
+    @RevelationTable("arcane matters", recommendedRoll = "1d10", category = "Life Events")
+    val ARCANE_MATTERS = (dataMap["arcane_matters"] as? BlankMap).toDataMap()
+
+    @RevelationTable("boons", recommendedRoll = "1d10", category = "Life Events")
+    val BOONS = (dataMap["boons"] as? BlankMap).toDataMap()
+
+    @RevelationTable("crime", recommendedRoll = "1d8", category = "Life Events")
+    val CRIME = (dataMap["crime"] as? BlankMap).toDataMap()
+
+    @RevelationTable("punishment", recommendedRoll = "1d12", category = "Life Events")
+    val PUNISHMENT = (dataMap["punishment"] as? BlankMap).toDataMap()
+
     /**
      * SUPPLIMENTAL TABLES
      */
 
-    @RevelationTable("alignment")
+    @RevelationTable("alignment", recommendedRoll = "3d6", category = "Supplemental Tables")
     val ALIGNMENT = mapRangeOf(
             3 .. 3 to { if (DiceSet.d2() == 1) "Chaotic Evil" else "Chaotic Neutral" },
             4 .. 5 to { "Lawful Evil" },
@@ -160,7 +173,7 @@ object XGtECharacterBuilding: DataMapObject("xgte") {
             18 .. 18 to { if (DiceSet.d2() == 1) "Chaotic Good" else "Chaotic Neutral" }
     )
 
-    @RevelationTable("cause of death")
+    @RevelationTable("cause of death", recommendedRoll = "1d12", category = "Supplemental Tables")
     val CAUSE_OF_DEATH = mapRangeOf(
             1 .. 1 to "Unknown",
             2 .. 2 to "Murdered",
@@ -175,7 +188,7 @@ object XGtECharacterBuilding: DataMapObject("xgte") {
             12 .. 12 to "Bizarre event, such as being hit by a meteorite, struck down by an angry god, or killed by a hatching slaad egg"
     )
 
-    @RevelationTable("class", "classes")
+    @RevelationTable("class", "classes", recommendedRoll = "1d100", category = "Supplemental Tables")
     val CLASS = mapRangeOf(
             1 .. 7 to "Barbarian",
             8 .. 14 to "Bard",
@@ -191,7 +204,7 @@ object XGtECharacterBuilding: DataMapObject("xgte") {
             95 .. 100 to "Wizard"
     )
 
-    @RevelationTable("occupation", "occupations")
+    @RevelationTable("occupation", "occupations", recommendedRoll = "1d100", category = "Supplemental Tables")
     val OCCUPATION = mapRangeOf(
             1 .. 5 to "Academic",
             6 .. 10 to "Adventurer",
@@ -211,7 +224,7 @@ object XGtECharacterBuilding: DataMapObject("xgte") {
             96 .. 100 to "Soldier"
     )
 
-    @RevelationTable("elf subrace", "elf subraces")
+    @RevelationTable("elf subrace", "elf subraces", recommendedRoll = "3d6", category = "Subraces")
     val ELF_SUBRACES = mapRangeOf(
             3 .. 3 to "Drow",
             4 .. 8 to "Wood Elf",
@@ -221,26 +234,26 @@ object XGtECharacterBuilding: DataMapObject("xgte") {
             18 .. 18 to "Drow"
     )
 
-    @RevelationTable("dwarf subrace", "dwarf subraces")
+    @RevelationTable("dwarf subrace", "dwarf subraces", recommendedRoll = "3d4", category = "Subraces")
     val DWARF_SUBRACES = mapRangeOf(
             3 .. 4 to "Druegar",
             5 .. 8 to "Mountain Dwarf",
             9 .. 12 to "Hill Dwarf"
     )
 
-    @RevelationTable("halfling subrace", "halfling subraces")
+    @RevelationTable("halfling subrace", "halfling subraces", recommendedRoll = "1d3", category = "Subraces")
     val HALFLING_SUBRACES = mapRangeOf(
             1 .. 2 to "Lightfoot",
             3 .. 3 to "Stout"
     )
 
-    @RevelationTable("gnome subrace", "gnome subraces")
+    @RevelationTable("gnome subrace", "gnome subraces", recommendedRoll = "1d4", category = "Subraces")
     val GNOME_SUBRACES = mapRangeOf(
             1 .. 3 to "Rock Gnome",
             4 .. 4 to "Forest Gnome"
     )
 
-    @RevelationTable("dragonborn subrace", "dragonborn subraces")
+    @RevelationTable("dragonborn subrace", "dragonborn subraces", recommendedRoll = "1d10", category = "Subraces")
     val DRAGONBORN_SUBRACES = mapOf(
             1 to "Black",
             2 to "Blue",
@@ -254,7 +267,7 @@ object XGtECharacterBuilding: DataMapObject("xgte") {
             10 to "White"
     )
 
-    @RevelationTable("race", "races")
+    @RevelationTable("race", "races", recommendedRoll = "1d100", category = "Supplemental Tables")
     val RACE = mapRangeOf<DetailPair<String>>(
             1 .. 40 to ("Human" to ::noExtra),
             41 .. 50 to ("Dwarf" to this::dwarfSubrace),
@@ -271,14 +284,14 @@ object XGtECharacterBuilding: DataMapObject("xgte") {
             100 .. 100 to ("DM's Choice" to ::noExtra)
     )
 
-    @RevelationTable("relationship")
+    @RevelationTable("relationship", recommendedRoll = "3d4", category = "Supplemental Tables")
     val RELATIONSHIP = mapRangeOf(
             3 .. 4 to "Hostile",
             5 .. 10 to "Friendly",
             11 .. 12 to "Indifferent"
     )
 
-    @RevelationTable("status")
+    @RevelationTable("status", recommendedRoll = "3d6", category = "Supplemental Tables")
     val STATUS = mapRangeOf<DetailPair<String>>(
             3 .. 3 to ("Dead" to this::causeOfDeath),
             4 .. 5 to ("Missing or Unknown" to ::noExtra),

@@ -407,13 +407,26 @@ open class RevelationParser(parboiledCreated: Boolean) : BaseParser<Any>() {
         )
     }
 
-    open val tableSources = arrayOf(NPCTraits, XGtECharacterBuilding, TempleOfForgottenRealms, VillainTraits, Names)
+    open val tableSource = arrayOf(NPCTraits, XGtECharacterBuilding, TempleOfForgottenRealms, VillainTraits, Names)
 
-    open val tables: List<Pair<String, Map<Int, Any?>>> = tableSources.map(Any::findTables).flatten()
+    open val tables: List<Pair<String, Map<Int, Any?>>> = tableSource.map(Any::findTables).flatten()
             .sortedBy { (key) -> key }.distinctBy { (key) -> key }.asReversed()
 
-    open val tableNames: List<Pair<String, String>> = tableSources.map(Any::findTableNames).flatten()
-            .sortedBy { (key) -> key }.distinctBy { (key) -> key }.asReversed()
+    open val tableNames: Map<String, List<Pair<String, String>>> = tableSource.map(Any::findTableNames).flatten()
+            .groupBy { (_, tag) -> tag }
+            .mapValues { (_, list) -> Triple(list[0].third, list[0].second, list[1].third) }
+            .values.groupBy { (tag) -> tag }
+            .mapValues { (_, list) ->
+                list.map { (_, a, b) -> a to b }
+                        .sortedBy { (key) -> key }.distinctBy { (key) -> key }.asReversed()
+            }.toSortedMap(Comparator<String> { o1, o2 ->
+                if (o1.startsWith("- "))
+                    return@Comparator -1
+                if (o2.startsWith("- "))
+                    return@Comparator 1
+
+                return@Comparator o1.compareTo(o2)
+            })
 
     open fun RollCommand(): Rule {
         val rawVar = Var<Boolean>(false)
