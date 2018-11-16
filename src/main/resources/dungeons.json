@@ -1,0 +1,8 @@
+{
+  "starting_area":{
+    "1": "Square, 20 x 20 ft.; passage on each wall",
+    "2": "Square, 20 x 20 ft.; door on two walls, passage in third wall",
+    "3": "Square, 40 x 40 ft.; doors on three walls",
+    "4": "Rectangle, 80 x 20 ft., with row of pillars down the middle; two passages leading from each long wall, doors on each short wall"
+  }
+}

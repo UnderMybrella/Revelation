@@ -7,8 +7,10 @@ class RevelationOutput {
         val RAW: RevelationOutputTemplate = { data ->
             buildString {
                 if (data.raw.isNotBlank()) {
-                    appendln(data.raw)
+                    append(data.raw)
+                }
 
+                if (data.raw.isNotBlank() && data.values.isNotEmpty()) {
                     appendln()
                     appendln("------------")
                     appendln()
@@ -104,8 +106,8 @@ class RevelationOutput {
     val raw: StringBuilder = StringBuilder()
     var format: RevelationOutputTemplate = RAW
 
-    fun format(): String = format(this)
-    fun format(outputFormat: RevelationOutputTemplate = RAW): String = outputFormat(this)
+    fun format(): String = format(this).trim()
+    fun format(outputFormat: RevelationOutputTemplate = RAW): String = outputFormat(this).trim()
     fun add(value: Pair<String, Any?>) {
         values.add(value)
     }

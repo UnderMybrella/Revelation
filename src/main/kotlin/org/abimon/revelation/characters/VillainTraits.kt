@@ -1,8 +1,10 @@
 package org.abimon.revelation.characters
 
 import org.abimon.revelation.DiceSet
+import org.abimon.revelation.RevelationTable
 
 object VillainTraits {
+    @RevelationTable("immortality scheme", recommendedRoll = "1d4")
     val IMMORTALITY_SCHEME = mapOf(
             1 to "Acquire a legendary item to prolong life",
             2 to "Ascend to godhood",
@@ -10,6 +12,7 @@ object VillainTraits {
             4 to "Steal a planar creature's essence"
     )
 
+    @RevelationTable("influence scheme", recommendedRoll = "1d4")
     val INFLUENCE_SCHEME = mapOf(
             1 to "Seize a position of power or title",
             2 to "Win a contest or tournament",
@@ -17,6 +20,7 @@ object VillainTraits {
             4 to "Place a pawn in a position of power"
     )
 
+    @RevelationTable("magic scheme", recommendedRoll = "1d6")
     val MAGIC_SCHEME = mapOf(
             1 to "Obtain an ancient artifact",
             2 to "Build a construct or magical device",
@@ -26,6 +30,7 @@ object VillainTraits {
             6 to "Open a gate to another world"
     )
 
+    @RevelationTable("mayhem scheme", recommendedRoll = "1d6")
     val MAYHEM_SCHEME = mapOf(
             1 to "Fulfill an apocalyptic prophecy",
             2 to "Enact the vengeful will of a god or patron",
@@ -35,6 +40,7 @@ object VillainTraits {
             6 to "Utterly destroy a bloodline or clan"
     )
 
+    @RevelationTable("passion scheme", recommendedRoll = "1d4")
     val PASSION_SCHEME = mapOf(
             1 to "Prolong the life of a loved one",
             2 to "Prove worthy of another person's love",
@@ -42,6 +48,7 @@ object VillainTraits {
             4 to "Destroy rivals for another person's affection"
     )
 
+    @RevelationTable("power scheme", recommendedRoll = "1d4")
     val POWER_SCHEME = mapOf(
             1 to "Conquer a region or incite a rebellion",
             2 to "Seize control of an army",
@@ -49,6 +56,7 @@ object VillainTraits {
             4 to "Gain the favour of a ruler"
     )
 
+    @RevelationTable("revenge scheme", recommendedRoll = "1d4")
     val REVENGE_SCHEME = mapOf(
             1 to "Avenge a past humiliation or insult",
             2 to "Avenge a past imprisonment or injury",
@@ -56,6 +64,7 @@ object VillainTraits {
             4 to "Retrieve stolen property and punish the thief"
     )
 
+    @RevelationTable("wealth scheme", recommendedRoll = "1d4")
     val WEALTH_SCHEME = mapOf(
             1 to "Control natural resources or trade",
             2 to "Marry into wealth",
@@ -63,17 +72,19 @@ object VillainTraits {
             4 to "Steal lands, goods, or money"
     )
 
+    @RevelationTable("villain scheme", recommendedRoll = "1d8")
     val SCHEMES = mapOf(
-            1 to (DiceSet.d4 to IMMORTALITY_SCHEME),
-            2 to (DiceSet.d4 to INFLUENCE_SCHEME),
-            3 to (DiceSet.d6 to MAGIC_SCHEME),
-            4 to (DiceSet.d6 to MAYHEM_SCHEME),
-            5 to (DiceSet.d4 to PASSION_SCHEME),
-            6 to (DiceSet.d4 to POWER_SCHEME),
-            7 to (DiceSet.d4 to REVENGE_SCHEME),
-            8 to (DiceSet.d4 to WEALTH_SCHEME)
+            1 to { "Immortality (${IMMORTALITY_SCHEME[DiceSet.d4()] ?: "Unknown"})" },
+            2 to { "Influence (${INFLUENCE_SCHEME[DiceSet.d4()] ?: "Unknown"})" },
+            3 to { "Magic (${MAGIC_SCHEME[DiceSet.d6()] ?: "Unknown"})" },
+            4 to { "Mayhem (${MAYHEM_SCHEME[DiceSet.d6()] ?: "Unknown"})" },
+            5 to { "Passion (${PASSION_SCHEME[DiceSet.d4()] ?: "Unknown"})" },
+            6 to { "Power (${POWER_SCHEME[DiceSet.d4()] ?: "Unknown"})" },
+            7 to { "Revenge (${REVENGE_SCHEME[DiceSet.d4()] ?: "Unknown"})" },
+            8 to { "Wealth (${WEALTH_SCHEME[DiceSet.d4()] ?: "Unknown"})" }
     )
 
+    @RevelationTable("agricultural devastation method", recommendedRoll = "1d4")
     val AGRICULTURAL_DEVASTATION_METHOD = mapOf(
             1 to "Blight",
             2 to "Crop failure",
@@ -81,6 +92,7 @@ object VillainTraits {
             4 to "Famine"
     )
 
+    @RevelationTable("captivity method", "coersion method", "captivity or coersion method", recommendedRoll = "1d10")
     val CAPTIVITY_OR_COERCION_METHOD = mapOf(
             1 to "Bribery",
             2 to "Enticement",
@@ -94,6 +106,7 @@ object VillainTraits {
             10 to "Threats or harassment"
     )
 
+    @RevelationTable("confidence scam method", recommendedRoll = "1d6")
     val CONFIDENCE_SCAM_METHODS = mapOf(
             1 to "Breach of contract",
             2 to "Cheating",
@@ -103,6 +116,7 @@ object VillainTraits {
             6 to "Quackery or tricks"
     )
 
+    @RevelationTable("defamation method", recommendedRoll = "1d4")
     val DEFAMATION_METHODS = mapOf(
             1 to "Framing",
             2 to "Gossiping or slander",
@@ -110,6 +124,7 @@ object VillainTraits {
             4 to "Libel or insults"
     )
 
+    @RevelationTable("execution method", recommendedRoll = "1d8")
     val EXECUTION_METHODS = mapOf(
             1 to "Beheading",
             2 to "Burning at the stake",
@@ -121,6 +136,7 @@ object VillainTraits {
             8 to "Sacrifice (Living)"
     )
 
+    @RevelationTable("magical mayhem method", recommendedRoll = "1d8")
     val MAGICAL_MAYHEM_METHODS = mapOf(
             1 to "Hauntings",
             2 to "illusions",
@@ -132,6 +148,7 @@ object VillainTraits {
             8 to "Weather control"
     )
 
+    @RevelationTable("murder method", recommendedRoll = "1d10")
     val MURDER_METHODS = mapOf(
             1 to "Assassination",
             2 to "Cannibalism",
@@ -145,6 +162,7 @@ object VillainTraits {
             10 to "Strangulation or suffocation"
     )
 
+    @RevelationTable("political method", recommendedRoll = "1d6")
     val POLITICAL_METHODS = mapOf(
             1 to "Betrayal or treason",
             2 to "Conspiracy",
@@ -154,6 +172,7 @@ object VillainTraits {
             6 to "Raising taxes"
     )
 
+    @RevelationTable("religion method", recommendedRoll = "1d4")
     val RELIGION_METHODS = mapOf(
             1 to "Curses",
             2 to "Desecration",
@@ -161,6 +180,7 @@ object VillainTraits {
             4 to "Heresy or cults"
     )
 
+    @RevelationTable("theft method", "property crime method", "theft or property crime method", recommendedRoll = "1d10")
     val THEFT_OR_PROPERTY_CRIME_METHODS = mapOf(
             1 to "Arson",
             2 to "Blackmail or extortion",
@@ -174,6 +194,7 @@ object VillainTraits {
             10 to "Smuggling"
     )
 
+    @RevelationTable("torture method", recommendedRoll = "1d6")
     val TORTURE_METHODS = mapOf(
             1 to "Acid",
             2 to "Blinding",
@@ -183,6 +204,7 @@ object VillainTraits {
             6 to "Whipping"
     )
 
+    @RevelationTable("vice method", recommendedRoll = "1d4")
     val VICE_METHODS = mapOf(
             1 to "Adultery",
             2 to "Drugs or alcohol",
@@ -190,6 +212,7 @@ object VillainTraits {
             4 to "Seduction"
     )
 
+    @RevelationTable("warfare method", recommendedRoll = "1d6")
     val WARFARE_METHODS = mapOf(
             1 to "Ambush",
             2 to "Invasion",
@@ -199,6 +222,7 @@ object VillainTraits {
             6 to "Terrorism"
     )
 
+    @RevelationTable("villain method", "villain methods", recommendedRoll = "1d20")
     val VILLAIN_METHODS = mapOf<Int, () -> String>(
             1 to { "Agricultural devastation (${AGRICULTURAL_DEVASTATION_METHOD[DiceSet.d4()]})" },
             2 to { "Assault or beatings" },
@@ -222,6 +246,7 @@ object VillainTraits {
             20 to { "Warfare (${WARFARE_METHODS[DiceSet.d6()]})" }
     )
 
+    @RevelationTable("villain weakness", "villain weaknesses", recommendedRoll = "1d8")
     val VILLAIN_WEAKNESS = mapOf(
             1 to "A hidden object holds the villain's soul",
             2 to "The villain's power is broken if the death of its true love is avenged",
@@ -237,7 +262,7 @@ object VillainTraits {
         get() = IMMORTALITY_SCHEME[DiceSet.d4()]!!
 
     val scheme: String
-        get() = SCHEMES[DiceSet.d8()]!!.let { (die, scheme) -> scheme[die()]!! }
+        get() = SCHEMES[DiceSet.d8()]!!()
     val method: String
         get() = VILLAIN_METHODS[DiceSet.d20()]!!()
     val weakness: String

@@ -7,10 +7,7 @@ import org.abimon.revelation.characters.genetics.HeightGene
 import org.abimon.revelation.characters.genetics.RacialGene
 import org.abimon.revelation.characters.races.DwarfRace
 import org.abimon.revelation.magicItems.categories.MagicItemCategory
-import org.abimon.revelation.parboiled.RevelationFunc
-import org.abimon.revelation.parboiled.RevelationOutput
 import org.abimon.revelation.parboiled.RevelationParser
-import org.parboiled.parserunners.BasicParseRunner
 import java.util.concurrent.ThreadLocalRandom
 
 object Revelation {
@@ -21,32 +18,15 @@ object Revelation {
         while (true) {
             print("> ")
             val line = readLine() ?: break
-
-            val header = BasicParseRunner<Any>(parser.Macros())
-            val headerResult = header.run(line)
-
-            if (headerResult.matched) {
-                val runner = BasicParseRunner<Any>(parser.CommandLine())
-                val result = runner.run(headerResult.valueStack.reversed().joinToString("\n"))
-
-                if (result.matched) {
-                    val data = RevelationOutput()
-                    result.valueStack.toList().reversed().forEach { value ->
-                        when (value) {
-                            is RevelationFunc -> value(data)
-                            is Pair<*, *> -> data.add(value.first.toString() to value.second)
-                        }
-                    }
-
-                    println(data.format())
-                } else {
-                    println("Unknown command: $line")
-                }
-            } else {
+            val output = parser.parse(line)
+            if (output == null)
                 println("Unknown command: $line")
-            }
+            else
+                println(output.format())
         }
     }
+
+    fun testFunc(): String = ""
 
     fun magicItems() {
         val names = ArrayList<String>()

@@ -1,0 +1,55 @@
+{
+  "adventures": {
+    "1..10": "You nearly died. You have nasty scars on your body, and you are missing an ear, {{ roll raw:1d3 }} (1d3) fingers, or {{ roll raw:1d4 }} (1d4) toes.",
+    "11..20": "You suffered a grievous injury. Although the wound healed, it still pains you from time to time.",
+    "21..30": "You were wounded, but in time you fully recovered.",
+    "31..40": "You contracted a disease while exploring a filthy warren. You recovered from the disease, but you have a persistent cough, pockmarks on your skin, or prematurely gray hair.",
+    "41..50": "You were poisoned by a trap or a monster. You recovered, but the next time you must make a saving throw against poison, you make the saving throw with disadvantage.",
+    "51..60": "You lost something of sentimental value to you during your adventure. Remove one trinket from your possessions.",
+    "61..70": "You were terribly frightened by something you encountered and ran away, abandoning your companions to their fate.",
+    "71..80": "You learned a great deal during your adventure. The next time you make an ability check or saving throw, you have advantage on the roll.",
+    "81..90": "You found some treasure on your adventure. You have {{ roll raw:2d6 }} (2d6) gp left from your share of it.",
+    "91..99": "You found a considerable amount of treasure on your adventure. You have {{ roll raw:1d20+50 }} (1d20+50) gp left from your share of it.",
+    "100": "You came across a common magic item (Of the DM's choice)"
+  },
+  "arcane_matters": {
+    "1": "You were charmed or frightened by a spell.",
+    "2": "You were injured by the effect of a spell.",
+    "3": "You witnessed a powerful spell being cast by a cleric, a druid, a sorcerer, a warlock, or a wizard.",
+    "4": "You drank a potion (of the DM's choice).",
+    "5": "You found a spell scroll (of the DM's choice) and succeeded in casting the spell it contained.",
+    "6": "You were affected by teleportation magic.",
+    "7": "You turned invisible for a time.",
+    "8": "You identified an illusion for what it was.",
+    "9": "You saw a creature being conjured by magic.",
+    "10": "Your fortune was read by a diviner. Roll twice on the Life Events table, but don't apply the results. Instead, the DM picks one event as a portent of your future (which might or might not come true)."
+  },
+  "boons": {
+    "1": "A friendly wizaard gave you a spell scroll containing one cantrip (of the DM's choice).",
+    "2": "You saved the life of a commoner, who now owes you a life debt. This individual accompanies you on your travels and performes mundane tasks for you, but will leave if neglected, abused, or imperiled. Determine details about this character by using the supplemental tables and working with your DM.",
+    "3": "You found a riding horse.",
+    "4": "You found some money. You have {{ roll raw:1d20 }} (1d20) gp in addition to your regular starting funds.",
+    "5": "A relative bequeathed you a simple weapon of your choice.",
+    "6": "You found something interesting. You gain one additional trinket.",
+    "7": "You once performed a service for a local temple. The next time you visit the temple, you can receive healing up to your hit point maximum.",
+    "8": "A friendly alchemist gifted you with a potion of healing, or a flask of acid, as you choose.",
+    "9": "You found a treasure map.",
+    "10": "A distant relative left you a stipend that enables you to live at the comfortable lifestyle for {{ roll raw:1d20 }} (1d20) years. If you choose to live at a higher lifestyle, you reduce the price by 2 gp during that time period."
+  },
+  "crime": {
+    "1": "Murder",
+    "2": "Theft",
+    "3": "Burglary",
+    "4": "Assault",
+    "5": "Smuggling",
+    "6": "Kidnapping",
+    "7": "Extortion",
+    "8": "Counterfeiting"
+  },
+  "punishment": {
+    "1..3": "You did not commit the crime and were exonerated after being accused.",
+    "4..6": "You committed the crime or helped do so, but nonetheless the authorities found you not guilty.",
+    "7..8": "You were nearly caught in the act. You had to flee and are wanted in the community where the crime occurred.",
+    "9..12": "You were caught and convicted. You spent time in jail, chained to an oar, or performing hard labour. You served a sentence of {{ roll raw:1d4 }} (1d4) years or succeeded in escaping after that much time."
+  }
+}

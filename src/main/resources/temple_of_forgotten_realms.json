@@ -1,0 +1,48 @@
+{
+  "buffs": {
+    "1": "Spell Damage is Doubled",
+    "2": "Melee Damage is Doubled",
+    "3": "Ranged Damage is Doubled",
+    "4": "+5 to hit on all attacks",
+    "5": "+5 to Saving Throws",
+    "6": "+5 to AC",
+    "7": "All rolls are made with advantage",
+    "8": "5% chance to gain another action at the end of your action (1 on a d20)",
+    "9": "Double Proficiency Bonus",
+    "10": "Double Speed"
+  },
+  "debuffs": {
+    "1": "Spell Damage is Halved",
+    "2": "Melee Damage is Halved",
+    "3": "Ranged Damage is Halved",
+    "4": "-5 to hit on all attacks",
+    "5": "-5 to Saving Throws",
+    "6": "-5 to AC",
+    "7": "All rolls are made with disadvantage",
+    "8": "5% chance to lose your next action at the end of your action (1 on a d20)",
+    "9": "Halved Proficiency Bonus",
+    "10": "Halved Speed"
+  },
+  "environmental": {
+    "1": "None",
+    "2": "Anti-Magic Zone",
+    "3": "Wild Magic Zone (Each Spell Cast has a 25% chance (1 on a d4) to proc a wild magic effect)",
+    "4": "Complete Darkness (Not even Devilsight works)",
+    "5": "Feywild Magic",
+    "6": "Shadowfell Despair",
+    "7": "Pervasive Goodwill",
+    "8": "Overwhelming Joy",
+    "9": "Beast Transformation",
+    "10": "Intense Yearning",
+    "11": "Immortal Wrath",
+    "12": "Power of the Mind",
+    "13": "Mad Winds",
+    "14": "Abyssal Corruption",
+    "15": "Prison Plane",
+    "16": "Vile Transformation",
+    "17": "Cruel Hindrance",
+    "18": "Pervasive Evil",
+    "19": "Bloodlust",
+    "20": "Law of Averages"
+  }
+}

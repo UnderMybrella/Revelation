@@ -1,11 +1,43 @@
 package org.abimon.revelation
 
 import org.abimon.revelation.parboiled.RevelationOutput
+import java.lang.reflect.Field
 import java.util.*
 
 typealias DetailPair<T> = Pair<T, () -> T>
 typealias RevelationAction = () -> Unit
 typealias RevelationOutputTemplate = (RevelationOutput) -> String
+typealias BlankMap = Map<*, *>
+
+fun Any?.findTables(): List<Pair<String, Map<Int, Any?>>> {
+    val instance = (this?.instance() ?: return emptyList())
+
+    return instance::class.java.declaredFields.mapNotNull { field ->
+        val tags = field.annotations.mapNotNull { annotation -> if(annotation is RevelationTable) annotation.tags else null }.toTypedArray().flatten()
+
+        if (tags.isNotEmpty())
+            return@mapNotNull field.getMapFrom(instance).let { map -> tags.map { tag -> tag to map } }
+        return@mapNotNull null
+    }.flatten()
+}
+
+fun Any?.findTableNames(): List<Pair<String, String>> {
+    val instance = (this?.instance() ?: return emptyList())
+
+    return instance::class.java.declaredFields.mapNotNull { field ->
+        val tags = field.annotations.mapNotNull { annotation -> if(annotation is RevelationTable) annotation.tags.map { tag -> tag to annotation.recommendedRoll } else null }.flatten()
+
+        if (tags.isNotEmpty())
+            return@mapNotNull tags
+        return@mapNotNull null
+    }.flatten()
+}
+
+fun Field.getMapFrom(instance: Any): Map<Int, Any?> {
+    isAccessible = true
+
+    return (this[instance] as BlankMap).mapKeys { (key) -> key.toString().toIntOrNull() ?: 0 }
+}
 
 public infix fun <T, R> Array<out T>.zipAll(other: Array<out R>): List<Pair<T, R>> {
     return flatMap { t -> other.map { r -> t to r } }

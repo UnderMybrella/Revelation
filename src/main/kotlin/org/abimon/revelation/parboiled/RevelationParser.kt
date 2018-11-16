@@ -1,16 +1,17 @@
 package org.abimon.revelation.parboiled
 
-import org.abimon.revelation.DiceSet
+import org.abimon.revelation.*
 import org.abimon.revelation.characters.NPCTraits
+import org.abimon.revelation.characters.Names
 import org.abimon.revelation.characters.VillainTraits
 import org.abimon.revelation.characters.XGtECharacterBuilding
-import org.abimon.revelation.innerPlane
-import org.abimon.revelation.outerPlane
+import org.abimon.revelation.iona.TempleOfForgottenRealms
 import org.parboiled.Action
 import org.parboiled.BaseParser
 import org.parboiled.Parboiled
 import org.parboiled.Rule
 import org.parboiled.annotations.BuildParseTree
+import org.parboiled.parserunners.ReportingParseRunner
 import org.parboiled.support.StringVar
 import org.parboiled.support.Var
 
@@ -29,6 +30,32 @@ open class RevelationParser(parboiledCreated: Boolean) : BaseParser<Any>() {
     open fun InlineWhitespace(): Rule = OneOrMore(InlineWhitespaceCharacter())
     open fun OptionalInlineWhitespace(): Rule = ZeroOrMore(InlineWhitespaceCharacter())
 
+    fun parse(input: String): RevelationOutput? {
+        val header = ReportingParseRunner<Any>(Macros())
+        val runner = ReportingParseRunner<Any>(CommandLine())
+
+        val headerResult = header.run(input)
+
+        if (headerResult.matched) {
+            val result = runner.run(headerResult.valueStack.reversed().joinToString("\n"))
+
+            if (result.matched) {
+                val data = RevelationOutput()
+                result.valueStack.toList().reversed().forEach { value ->
+                    when (value) {
+                        is RevelationFunc -> value(data)
+                        is Pair<*, *> -> data.add(value.first.toString() to value.second)
+                    }
+                }
+
+                return data
+            } else {
+                return null
+            }
+        } else {
+            return null
+        }
+    }
 
     open val digitsLower = charArrayOf(
             '0', '1', '2', '3', '4', '5',
@@ -54,27 +81,26 @@ open class RevelationParser(parboiledCreated: Boolean) : BaseParser<Any>() {
     open fun Macros(): Rule =
             Sequence(MacroLine(), ZeroOrMore(OptionalInlineWhitespace(), AnyOf(charArrayOf(';', '|', '\n')), OptionalInlineWhitespace(), MacroLine()))
 
+    open val npcMacroGen = arrayOf(
+            "appearance", "stats", "talent", "mannerism", "interaction trait", "flaw",
+            "bond", "gender", "parent", "birthplace", "family", "family lifestyle",
+            "number of siblings", "birth order", "alignment", "status", "occupation", "race", "married",
+            "name", "age"
+    )
+
+    open val macros = mapOf(
+            "npc" to buildString {
+                appendln("change_format npc")
+                appendln("gen ${npcMacroGen.joinToString { str -> "ifm:$str" }}")
+                appendln("gen ifm:childhood home, ifm:childhood memories")
+            }
+    )
+
     open fun MacroLine(): Rule = FirstOf(
             Sequence(
                     IgnoreCase("macro:"),
-                    FirstOf(
-                            Sequence(
-                                    "npc",
-                                    Action<Any> {
-                                        push(buildString {
-                                            appendln("change_format npc")
-                                            appendln(
-                                                    "gen appearance, stats, talent, mannerism, interaction trait, flaw, " +
-                                                            "bond, gender, parent, birthplace, family, family lifestyle, " +
-                                                            "number of siblings, " +
-                                                            "birth order, alignment, status, occupation, race, married"
-                                            )
-                                            appendln("gen childhood home, childhood memories")
-                                        })
-                                    }
-                            ),
-                            "filler"
-                    )
+                    FirstOf(macros.keys.map(this::IgnoreCase).toTypedArray()),
+                    Action<Any> { push(macros[match().toLowerCase()]) }
             ),
             Sequence(
                     OneOrMore(AllButMatcher(charArrayOf(';', '|', '\n'))),
@@ -86,7 +112,10 @@ open class RevelationParser(parboiledCreated: Boolean) : BaseParser<Any>() {
             Hello(),
             Gen(),
             Format(),
-            Add()
+            Add(),
+            Set(),
+            Script(),
+            RollCommand()
     )
 
     open fun CommandLine(): Rule =
@@ -100,6 +129,7 @@ open class RevelationParser(parboiledCreated: Boolean) : BaseParser<Any>() {
     open fun Gen(): Rule {
         val timesVar = Var<Int>(0)
         val actionVar = Var<Pair<String, () -> Any>>()
+        val ifMissingVar = Var<Boolean>(false)
         val baseStrings = mapOf(
                 "appearance" to NPCTraits::appearance,
                 "high stat" to NPCTraits::highAbility,
@@ -148,17 +178,30 @@ open class RevelationParser(parboiledCreated: Boolean) : BaseParser<Any>() {
                 "gnome subrace" to XGtECharacterBuilding::gnomeSubrace,
                 "dragonborn subrace" to XGtECharacterBuilding::dragonbornSubrace,
 
+                "adventure" to XGtECharacterBuilding::adventure,
+
                 "married" to { if (DiceSet.d3() == 3) "Married" else "Single" },
 
                 "inner_plane" to ::innerPlane,
                 "outer_plane" to ::outerPlane,
 
                 /** Villain Traits */
-                "immortality_scheme" to VillainTraits::immortalityScheme
+                "immortality_scheme" to VillainTraits::immortalityScheme,
+
+                /** Iona */
+
+                /** Temple of Forgotten Realms */
+                "temple_buff" to TempleOfForgottenRealms::buff,
+                "temple_debuff" to TempleOfForgottenRealms::debuff,
+                "temple_environmental" to TempleOfForgottenRealms::environmental
         )
 
         val generation = Sequence(
-                Action<Any> { timesVar.set(1) },
+                Action<Any> { timesVar.set(1); actionVar.set("" to { "" }); ifMissingVar.set(false) },
+                Optional(
+                        "ifm:",
+                        Action<Any> { ifMissingVar.set(true) }
+                ),
                 Optional(
                         Roll(),
                         Action<Any> { timesVar.set(pop().toString().toInt()) },
@@ -257,10 +300,93 @@ open class RevelationParser(parboiledCreated: Boolean) : BaseParser<Any>() {
                                 OptionalInlineWhitespace(),
                                 ')'
                         ),
+                        Sequence(
+                                "name",
+                                FirstOf(
+                                        Sequence(
+                                                OptionalInlineWhitespace(),
+                                                '(',
+                                                OptionalInlineWhitespace(),
+                                                FirstOf(
+                                                        IgnoreCase("Dwarf"),
+                                                        IgnoreCase("Elf"),
+                                                        IgnoreCase("Halfling"),
+                                                        IgnoreCase("Human"),
+                                                        IgnoreCase("Dragonborn"),
+                                                        IgnoreCase("Gnome"),
+                                                        IgnoreCase("Half-Elf"),
+                                                        IgnoreCase("Half-Orc"),
+                                                        IgnoreCase("Tiefling")
+                                                ),
+                                                Action<Any> { actionVar.set(match() to {}) },
+                                                OptionalInlineWhitespace(),
+                                                ',',
+                                                OptionalInlineWhitespace(),
+                                                ParameterBut(')'),
+                                                Action<Any> {
+                                                    val name = NPCTraits.name(actionVar.get().first, pop() as String)
+                                                    actionVar.set("name" to name::toString)
+                                                },
+                                                ')'
+                                        ),
+                                        Sequence(
+                                                Action<Any> { context -> context.valueStack.any { value -> value is Pair<*, *> && value.first == "race" } && context.valueStack.any { value -> value is Pair<*, *> && value.first == "gender" } },
+                                                Action<Any> { context ->
+                                                    val name = NPCTraits.name(
+                                                            (context.valueStack.first { value -> value is Pair<*, *> && value.first == "race" } as Pair<*, *>).second.toString().substringBefore(" ("),
+                                                            (context.valueStack.first { value -> value is Pair<*, *> && value.first == "gender" } as Pair<*, *>).second.toString()
+                                                    )
+
+                                                    actionVar.set("name" to name::toString)
+                                                }
+                                        )
+                                )
+                        ),
+                        Sequence(
+                                "age",
+                                FirstOf(
+                                        Sequence(
+                                                OptionalInlineWhitespace(),
+                                                '(',
+                                                OptionalInlineWhitespace(),
+                                                Sequence(
+                                                        FirstOf(
+                                                                IgnoreCase("Dwarf"),
+                                                                IgnoreCase("Elf"),
+                                                                IgnoreCase("Halfling"),
+                                                                IgnoreCase("Human"),
+                                                                IgnoreCase("Dragonborn"),
+                                                                IgnoreCase("Gnome"),
+                                                                IgnoreCase("Half-Elf"),
+                                                                IgnoreCase("Half-Orc"),
+                                                                IgnoreCase("Tiefling")
+                                                        ),
+                                                        Action<Any> {
+                                                            val age = NPCTraits.age(match())
+
+                                                            actionVar.set("age" to { age })
+                                                        }
+                                                ),
+                                                OptionalInlineWhitespace(),
+                                                ')'
+                                        ),
+                                        Sequence(
+                                                Action<Any> { context -> context.valueStack.any { value -> value is Pair<*, *> && value.first == "race" } },
+                                                Action<Any> { context ->
+                                                    val age = NPCTraits.age((context.valueStack.first { value -> value is Pair<*, *> && value.first == "race" } as Pair<*, *>).second.toString().substringBefore(" ("))
+
+                                                    actionVar.set("age" to { age })
+                                                }
+                                        )
+                                )
+                        ),
                         FirstOf(baseStrings.entries.reversed().map { (key, func) -> Sequence(IgnoreCase(key), Optional('s'), Action<Any> { actionVar.set(key to func) }) }.toTypedArray())
                 ),
                 Action<Any> {
                     val (key, func) = actionVar.get()
+                    if (ifMissingVar.get() && it.valueStack.any { value -> value is Pair<*, *> && value.first == key })
+                        return@Action true
+
                     for (i in 0 until timesVar.get())
                         push(key to func())
 
@@ -281,6 +407,69 @@ open class RevelationParser(parboiledCreated: Boolean) : BaseParser<Any>() {
         )
     }
 
+    open val tableSources = arrayOf(NPCTraits, XGtECharacterBuilding, TempleOfForgottenRealms, VillainTraits, Names)
+
+    open val tables: List<Pair<String, Map<Int, Any?>>> = tableSources.map(Any::findTables).flatten()
+            .sortedBy { (key) -> key }.distinctBy { (key) -> key }.asReversed()
+
+    open val tableNames: List<Pair<String, String>> = tableSources.map(Any::findTableNames).flatten()
+            .sortedBy { (key) -> key }.distinctBy { (key) -> key }.asReversed()
+
+    open fun RollCommand(): Rule {
+        val rawVar = Var<Boolean>(false)
+
+        return Sequence(
+                "roll",
+                InlineWhitespace(),
+                FirstOf(
+                        Sequence(
+                                "raw:",
+                                Action<Any> { rawVar.set(true) }
+                        ),
+                        Action<Any> { rawVar.set(false) }
+                ),
+                FirstOf(
+                        Sequence(
+                                Roll(),
+                                Action<Any> {
+                                    val string = buildString {
+                                        if (rawVar.get())
+                                            append(pop().toString())
+                                        else
+                                            appendln("You rolled a ${pop()}")
+                                    }
+                                    pushFunc { output -> output.raw.append(string) }
+                                }
+                        ),
+                        FirstOf(tables.map { (key, imTheMap) ->
+                            Sequence(
+                                    IgnoreCase(key),
+                                    ':',
+                                    Roll(),
+                                    Action<Any> {
+                                        val string = buildString {
+                                            val resultNum = pop().toString().toIntOrNull() ?: 0
+                                            var result = imTheMap[resultNum] ?: "Unknown"
+
+                                            while (result is Function0<*>) {
+                                                result = result() ?: "Unknown"
+                                            }
+
+                                            if (rawVar.get())
+                                                append(result)
+                                            else
+                                                appendln("The result of rolling $resultNum on $key is: $result")
+                                        }
+
+                                        pushFunc { output -> output.raw.append(string) }
+                                    }
+                            )
+                        }.toTypedArray())
+
+                )
+        )
+    }
+
     open fun Add(): Rule {
         val valueVar = StringVar()
 
@@ -294,9 +483,70 @@ open class RevelationParser(parboiledCreated: Boolean) : BaseParser<Any>() {
                 " ",
                 Parameter(),
                 Action<Any> {
-                    val pair = (pop() as String) to valueVar.get()
-                    pushFunc { data -> data.add(pair) }
+                    push((pop() as String) to valueVar.get())
                 }
+        )
+    }
+
+    open fun Set(): Rule {
+        val keyVar = StringVar()
+
+        return Sequence(
+                IgnoreCase("Set"),
+                " ",
+                ParameterBut('='),
+                Action<Any> { keyVar.set(pop() as String) },
+                FirstOf(
+                        Sequence(" ",
+                                IgnoreCase("to"),
+                                " "
+                        ),
+                        Sequence(
+                                OptionalInlineWhitespace(),
+                                '=',
+                                OptionalInlineWhitespace()
+                        )
+                ),
+                Parameter(),
+                Action<Any> {
+                    push(keyVar.get() to (pop() as String))
+                }
+        )
+    }
+
+    open fun Script(): Rule {
+        val stringVar = StringVar()
+
+        return Sequence(
+                "script:",
+
+                "~[",
+                Action<Any> { stringVar.set("") },
+
+                OneOrMore(
+                        FirstOf(
+                                Sequence(
+                                        "{{",
+                                        OptionalInlineWhitespace(),
+
+                                        OneOrMore(AllButMatcher(charArrayOf('}', ']', '~'))),
+                                        Action<Any> {
+                                            RevelationParser().parse(match())?.format()?.trim()?.let(stringVar::append)
+                                                    ?: false
+                                        },
+
+                                        OptionalInlineWhitespace(),
+                                        "}}"
+                                ),
+                                Sequence(
+                                        OneOrMore(AllButMatcher(charArrayOf('{', ']', '~'))),
+                                        Action<Any> { stringVar.append(match()) }
+                                )
+                        )
+                ),
+
+                "]~",
+                Action<Any> { pushFunc { output -> output.raw.appendln(stringVar.get()) } }
         )
     }
 
@@ -309,6 +559,19 @@ open class RevelationParser(parboiledCreated: Boolean) : BaseParser<Any>() {
             ),
             Sequence(
                     OneOrMore(AllButMatcher(whitespace)),
+                    Action<Any> { push(match()) }
+            )
+    )
+
+    open fun ParameterBut(vararg blacklist: Char): Rule = FirstOf(
+            Sequence(
+                    '"',
+                    OneOrMore(ParamMatcher),
+                    Action<Any> { push(match()) },
+                    '"'
+            ),
+            Sequence(
+                    OneOrMore(AllButMatcher(whitespace.plus(blacklist))),
                     Action<Any> { push(match()) }
             )
     )
