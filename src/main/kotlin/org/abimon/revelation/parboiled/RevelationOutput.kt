@@ -97,6 +97,25 @@ class RevelationOutput {
             }
         }
 
+        val SOCIAL: RevelationOutputTemplate = { data ->
+            buildString {
+                if (data.raw.isNotBlank()) {
+                    appendln(data.raw)
+
+                    appendln()
+                    appendln("------------")
+                    appendln()
+                }
+
+                val dataMap = data.values.groupBy { (key) -> key }
+                        .mapValues { (_, list) -> list.map(Pair<*, *>::second) }
+
+                for (social in SOCIAL_NAMES)
+                    appendln("${"$social:    ".padEnd(LONGEST_SOCIAL_LENGTH + 5, ' ')} ${social from dataMap}")
+            }
+        }
+            val SOCIAL_NAMES = arrayOf("argumentative", "arrogant", "blustering", "curious", "friendly", "honest", "hot-tempered", "irritable", "ponderous", "quiet", "suspicious")
+            val LONGEST_SOCIAL_LENGTH = SOCIAL_NAMES.map(String::length).max()!!
         infix fun String.from(map: Map<String, List<Any?>>): String = map[this]?.joinToString() ?: "Unknown"
         operator fun Map<String, List<Any?>>.get(vararg keys: String): String = keys.mapNotNull(this::get).flatten().distinct().takeIf(List<*>::isNotEmpty)?.joinToString() ?: "Unknown"
         public inline fun StringBuilder.appendOp(value: String?): StringBuilder = if (value?.endsWith("Unknown") != false) this else append(value).appendln()

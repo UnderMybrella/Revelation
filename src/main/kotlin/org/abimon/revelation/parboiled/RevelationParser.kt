@@ -93,6 +93,10 @@ open class RevelationParser(parboiledCreated: Boolean) : BaseParser<Any>() {
                 appendln("change_format npc")
                 appendln("gen ${npcMacroGen.joinToString { str -> "ifm:$str" }}")
                 appendln("gen ifm:childhood home, ifm:childhood memories")
+            },
+            "social" to buildString {
+                appendln("change_format social")
+                appendln("gen ifm:argumentative, ifm:arrogant, ifm:blustering, ifm:curious, ifm:friendly, ifm:honest, ifm:hot-tempered, ifm:irritable, ifm:ponderous, ifm:quiet, ifm:suspicious")
             }
     )
 
@@ -193,7 +197,21 @@ open class RevelationParser(parboiledCreated: Boolean) : BaseParser<Any>() {
                 /** Temple of Forgotten Realms */
                 "temple_buff" to TempleOfForgottenRealms::buff,
                 "temple_debuff" to TempleOfForgottenRealms::debuff,
-                "temple_environmental" to TempleOfForgottenRealms::environmental
+                "temple_environmental" to TempleOfForgottenRealms::environmental,
+
+                /** Social */
+
+                "argumentative" to DiceSet.d8::invoke,
+                "arrogant" to DiceSet.d8::invoke,
+                "blustering" to DiceSet.d8::invoke,
+                "curious" to DiceSet.d8::invoke,
+                "friendly" to DiceSet.d8::invoke,
+                "honest" to DiceSet.d8::invoke,
+                "hot-tempered" to DiceSet.d8::invoke,
+                "irritable" to DiceSet.d8::invoke,
+                "ponderous" to DiceSet.d8::invoke,
+                "quiet" to DiceSet.d8::invoke,
+                "suspicious" to DiceSet.d8::invoke
         )
 
         val generation = Sequence(
@@ -600,6 +618,10 @@ open class RevelationParser(parboiledCreated: Boolean) : BaseParser<Any>() {
                     Sequence(
                             "npc",
                             Action<Any> { pushFunc { data -> data.format = RevelationOutput.NPC } }
+                    ),
+                    Sequence(
+                            "social",
+                            Action<Any> { pushFunc { data -> data.format = RevelationOutput.SOCIAL } }
                     )
             )
     )
