@@ -1,11 +1,14 @@
 package org.abimon.revelation.parboiled
 
+import com.jakewharton.fliptables.FlipTable
 import org.abimon.revelation.*
 import org.abimon.revelation.characters.NPCTraits
 import org.abimon.revelation.characters.Names
 import org.abimon.revelation.characters.VillainTraits
 import org.abimon.revelation.characters.XGtECharacterBuilding
 import org.abimon.revelation.iona.TempleOfForgottenRealms
+import org.abimon.revelation.tables.DMWorkshop
+import org.abimon.revelation.tables.RandomDungeons
 import org.parboiled.Action
 import org.parboiled.BaseParser
 import org.parboiled.Parboiled
@@ -119,7 +122,8 @@ open class RevelationParser(parboiledCreated: Boolean) : BaseParser<Any>() {
             Add(),
             Set(),
             Script(),
-            RollCommand()
+            RollCommand(),
+            DumpTable()
     )
 
     open fun CommandLine(): Rule =
@@ -425,7 +429,7 @@ open class RevelationParser(parboiledCreated: Boolean) : BaseParser<Any>() {
         )
     }
 
-    open val tableSource = arrayOf(NPCTraits, XGtECharacterBuilding, TempleOfForgottenRealms, VillainTraits, Names)
+    open val tableSource = arrayOf(NPCTraits, XGtECharacterBuilding, TempleOfForgottenRealms, VillainTraits, Names, DMWorkshop, RandomDungeons)
 
     open val tables: List<Pair<String, Map<Int, Any?>>> = tableSource.map(Any::findTables).flatten()
             .sortedBy { (key) -> key }.distinctBy { (key) -> key }.asReversed()
@@ -477,7 +481,7 @@ open class RevelationParser(parboiledCreated: Boolean) : BaseParser<Any>() {
                                     IgnoreCase(key),
                                     ':',
                                     Roll(),
-                                    Action<Any> {
+                                    Action<Any> { context ->
                                         val string = buildString {
                                             val resultNum = pop().toString().toIntOrNull() ?: 0
                                             var result = imTheMap[resultNum] ?: "Unknown"
@@ -486,13 +490,19 @@ open class RevelationParser(parboiledCreated: Boolean) : BaseParser<Any>() {
                                                 result = result() ?: "Unknown"
                                             }
 
+                                            while (result.toString().startsWith("script:~[")) {
+                                                result = parse(result.toString())?.format()?.trim() ?: "Unknown"
+                                            }
+
                                             if (rawVar.get())
                                                 append(result)
                                             else
                                                 appendln("The result of rolling $resultNum on $key is: $result")
                                         }
 
-                                        pushFunc { output -> output.raw.append(string) }
+                                        context.valueStack.push(RevelationFunc { output -> output.raw.append(string) })
+
+                                        return@Action true
                                     }
                             )
                         }.toTypedArray())
@@ -500,6 +510,39 @@ open class RevelationParser(parboiledCreated: Boolean) : BaseParser<Any>() {
                 )
         )
     }
+
+    open fun DumpTable(): Rule =
+            Sequence(
+                    "dump table ",
+                    FirstOf(tables.map { (key, imTheMap) ->
+                        Sequence(
+                                IgnoreCase(key),
+                                Action<Any> { context ->
+                                    val string = buildString {
+                                        val rows: MutableList<Array<String>> = ArrayList()
+                                        imTheMap.keys.sorted().forEach { resultNum ->
+                                            var result = imTheMap[resultNum] ?: "Unknown"
+
+                                            while (result is Function0<*>) {
+                                                result = result() ?: "Unknown"
+                                            }
+
+                                            while (result.toString().startsWith("script:~[")) {
+                                                result = parse(result.toString())?.format()?.trim() ?: "Unknown"
+                                            }
+
+                                            rows.add(arrayOf(resultNum.toString(), result.toString()))
+                                        }
+
+                                        append(FlipTable.of(arrayOf("Roll", "Result"), rows.toTypedArray()))
+                                    }
+
+                                    context.valueStack.push(RevelationFunc { output -> output.raw.append(string) })
+                                    return@Action true
+                                }
+                        )
+                    }.toTypedArray())
+            )
 
     open fun Add(): Rule {
         val valueVar = StringVar()
